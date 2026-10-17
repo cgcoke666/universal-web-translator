@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>网页翻译</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="head">
+      <img src="../icons/icon32.png" alt="" width="20" height="20" />
+      <span class="head__title">网页翻译</span>
+      <button class="link" id="openOptions" title="打开设置">设置</button>
+    </header>
+
+    <main class="body">
+      <button class="primary" id="toggle">翻译此页面</button>
+
+      <div class="row">
+        <label class="row__label">显示</label>
+        <div class="seg" id="modeSeg">
+          <button data-mode="bilingual">双语对照</button>
+          <button data-mode="replace">仅译文</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <label class="row__label">目标</label>
+        <select id="targetLang" class="select"></select>
+      </div>
+
+      <div class="row">
+        <label class="row__label">站点</label>
+        <select id="siteMode" class="select">
+          <option value="auto">跟随全局设置</option>
+          <option value="always">本网站自动翻译</option>
+          <option value="never">本网站永不翻译</option>
+        </select>
+      </div>
+
+      <p class="host" id="host"></p>
+      <p class="status" id="status">就绪</p>
+
+      <div class="progress" id="progress" hidden>
+        <div class="progress__bar"><i id="progressBar"></i></div>
+        <span id="progressText"></span>
+      </div>
+
+      <div class="quick">
+        <button class="link" id="retranslate">重新翻译</button>
+        <button class="link" id="restore">还原原文</button>
+      </div>
+    </main>
+
+    <footer class="foot">
+      <span id="engineInfo"></span>
+      <span class="kbd"><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd></span>
+    </footer>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

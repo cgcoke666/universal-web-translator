@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: 构建 + 产物校验 + 单元测试
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      # 本项目零依赖，不需要 npm install；直接跑脚本
+      - name: 构建与测试
+        run: npm run check
+
+      - name: 打包发布产物
+        run: node scripts/pack.mjs
+
+      - name: 上传产物（便于排查失败）
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension-node${{ matrix.node }}
+          path: release/*.zip
+          if-no-files-found: error

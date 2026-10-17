@@ -1,0 +1,38 @@
+{
+  "name": "universal-web-translator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Chromium (MV3) 沉浸式网页翻译扩展：内置 Translator API 优先（免费、离线、文本不出设备），双语对照 / 划词翻译 / 动态内容跟进，多引擎可插拔自动降级。零依赖构建。",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "author": "cgcoke666",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cgcoke666/universal-web-translator.git"
+  },
+  "homepage": "https://github.com/cgcoke666/universal-web-translator#readme",
+  "bugs": {
+    "url": "https://github.com/cgcoke666/universal-web-translator/issues"
+  },
+  "keywords": [
+    "chrome-extension",
+    "manifest-v3",
+    "translation",
+    "translator-api",
+    "on-device",
+    "bilingual",
+    "ollama",
+    "edge-extension"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "icons": "node scripts/make-icons.mjs",
+    "verify": "node scripts/verify.mjs",
+    "test": "node scripts/test.mjs",
+    "check": "node scripts/build.mjs && node scripts/verify.mjs && node scripts/test.mjs",
+    "pack": "node scripts/build.mjs && node scripts/pack.mjs && node scripts/verify.mjs"
+  }
+}

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>自检控制台 · 网页翻译</title>
+    <link rel="stylesheet" href="debug.css" />
+  </head>
+  <body>
+    <header>
+      <h1>网页翻译 · 自检控制台</h1>
+      <p>
+        这个页面不访问任何外部服务：它只用扩展自己的代码，验证「DOM 采集 → 分段 → 缓存 →
+        provider 解析」这条链路是否符合预期。装好扩展后打开本页即可确认核心逻辑是否正常。
+      </p>
+    </header>
+
+    <section class="card">
+      <h2>1. 环境</h2>
+      <dl id="env" class="kv"></dl>
+    </section>
+
+    <section class="card">
+      <h2>2. DOM 采集与分段</h2>
+      <p class="hint">
+        下面的样例覆盖了真实网站里最常见的结构：段落内联标签、代码块、输入框占位符、
+        Shadow DOM、动态插入内容、以及"整段正文在一个文本节点里"的长文。
+      </p>
+      <div id="fixture" class="fixture">
+        <article>
+          <h1>Getting Started with Web Components</h1>
+          <p>
+            Shadow DOM lets you attach a <strong>scoped</strong> subtree to an element, so styles
+            and markup stay isolated. This paragraph contains <em>emphasis</em>, a
+            <a href="#">link</a>, and <code>inline code</code>.
+          </p>
+          <pre><code>const el = document.querySelector('my-card');
+el.attachShadow({ mode: 'open' });</code></pre>
+          <label>Search the documentation <input placeholder="Type keywords here" /></label>
+          <my-card></my-card>
+          <div id="dynamicSlot"></div>
+          <p id="longText"></p>
+          <div class="ad-banner">Sponsored: buy something now</div>
+        </article>
+      </div>
+      <div class="actions">
+        <button id="runCollect">运行采集分析</button>
+        <label class="check"
+          ><input type="checkbox" id="skipNoise" /> 把常见噪音区域计入跳过（nav/footer 等）</label
+        >
+        <label class="check"
+          ><input type="checkbox" id="onlyArticle" /> 只翻译 article 区域</label
+        >
+      </div>
+      <div id="collectOut" class="out">点击上面的按钮开始。</div>
+    </section>
+
+    <section class="card">
+      <h2>3. Provider 响应解析（离线）</h2>
+      <p class="hint">
+        直接喂给解析函数一些"模型不听话"的真实样例，确认不会把译文弄错位或丢弃。
+        这正是整页翻译里最容易悄悄出错的环节。
+      </p>
+      <div class="actions">
+        <button id="runParse">运行解析用例</button>
+      </div>
+      <div id="parseOut" class="out">点击上面的按钮开始。</div>
+    </section>
+
+    <section class="card">
+      <h2>4. 缓存读写</h2>
+      <div class="actions">
+        <button id="runCache">运行缓存自检</button>
+        <label class="check"
+          ><input type="checkbox" id="offlineCache" checked /> 同时验证 IndexedDB 持久化</label
+        >
+      </div>
+      <div id="cacheOut" class="out">点击上面的按钮开始。</div>
+    </section>
+
+    <section class="card">
+      <h2>5. 真实翻译（会发网络请求）</h2>
+      <p class="hint">
+        前四步完全离线。这一步才会真的调用你在设置里选的引擎，用来确认 Key / 网络 /
+        配额是否可用。
+      </p>
+      <div class="actions">
+        <textarea id="sample" rows="3">Cloud computing enables on-demand delivery of computing resources over the internet.</textarea>
+        <button id="runLive">翻译这段文字</button>
+      </div>
+      <div id="liveOut" class="out">尚未测试。</div>
+    </section>
+
+    <script type="module" src="debug.js"></script>
+  </body>
+</html>

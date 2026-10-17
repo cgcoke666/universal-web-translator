@@ -1,0 +1,22 @@
+{
+  "extName": {
+    "message": "沉浸式网页翻译 · Universal Web Translator",
+    "description": "扩展名称，显示在扩展管理页与工具栏提示上"
+  },
+  "extShortName": {
+    "message": "网页翻译",
+    "description": "扩展简称，工具栏空间不足时使用"
+  },
+  "extDescription": {
+    "message": "为绝大多数网站提供整页翻译：双语对照、划词翻译、动态内容自动跟进。默认使用 Chrome 内置翻译（离线、免费、文本不出设备），不可用时自动降级到免费通道、自备 Key 的服务或本地 Ollama。",
+    "description": "扩展描述，显示在扩展管理页与应用商店"
+  },
+  "commandToggleTranslate": {
+    "message": "翻译/还原当前页面",
+    "description": "快捷键说明：切换整页翻译"
+  },
+  "commandToggleMode": {
+    "message": "切换双语对照 / 仅译文",
+    "description": "快捷键说明：切换译文展示方式"
+  }
+}

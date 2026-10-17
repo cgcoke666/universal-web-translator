@@ -1,0 +1,52 @@
+name: Release
+
+# 打 tag 即发布：git tag v0.1.0 && git push origin v0.1.0
+# 会构建、跑完整校验、生成 zip 并作为附件挂到 Release 上。
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 构建 + 校验 + 测试
+        run: npm run check
+
+      - name: 打包 zip
+        run: node scripts/pack.mjs
+
+      - name: 校验 tag 与版本号一致
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          tag="${GITHUB_REF#refs/tags/v}"
+          version="$(node -p "require('./package.json').version")"
+          if [ "$tag" != "$version" ]; then
+            echo "::error::tag v$tag 与 package.json 的版本 $version 不一致"
+            exit 1
+          fi
+
+      - name: 创建 Release 并上传 zip
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*.zip
+          generate_release_notes: true
+          body: |
+            ## 安装
+
+            1. 下载下方的 `.zip`
+            2. 解压到任意目录
+            3. 打开 `chrome://extensions` → 开启「开发者模式」→「加载已解压的扩展程序」→ 选择解压后的目录
+
+            需要 Chrome 138+ 桌面版才能使用内置翻译（端上 / 离线）；更低版本仍可用远端通道。

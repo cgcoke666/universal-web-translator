@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>网页翻译 · 设置</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="brand">
+          <img src="../icons/icon48.png" alt="" width="28" height="28" />
+          <div>
+            <strong>网页翻译</strong>
+            <span id="version">v0.1.0</span>
+          </div>
+        </div>
+        <nav>
+          <a href="#engine" class="nav">翻译引擎</a>
+          <a href="#display" class="nav">显示方式</a>
+          <a href="#scope" class="nav">翻译范围</a>
+          <a href="#site" class="nav">站点适配</a>
+          <a href="#behavior" class="nav">行为与性能</a>
+          <a href="#storage" class="nav">缓存与备份</a>
+          <a href="#about" class="nav">关于</a>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <div class="banner" id="welcomeBanner" hidden>
+          <strong>安装完成。</strong>
+          <span>默认优先使用 Chrome 内置的端上翻译（免费、离线、无需 Key），失败时自动降级到免费通道。在任意网页点击右下角悬浮球即可开始翻译。</span>
+          <button class="link" id="dismissWelcome">知道了</button>
+        </div>
+
+        <section id="engine" class="card">
+          <h2>翻译引擎</h2>
+          <p class="hint">
+            默认先走 <strong>Chrome 内置翻译</strong>（端上运行，完全免费、文本不出设备），
+            失败或语言不支持时再依次尝试下面的远端通道（Microsoft/Edge → Google）。
+            填写 Key 后可获得更高质量或本地大模型推理。
+          </p>
+
+          <div class="field">
+            <label for="provider">主引擎</label>
+            <select id="provider"></select>
+          </div>
+
+          <div class="field">
+            <label>兜底顺序（主引擎失败时依次尝试）</label>
+            <div id="fallbackList" class="checklist"></div>
+          </div>
+
+          <div id="providerForms"></div>
+
+          <div class="card inner" id="onDeviceCard">
+            <h3>Chrome 内置翻译（端上 / 离线）</h3>
+            <p class="hint">
+              使用 Chrome 138+ 自带的翻译模型：<strong>完全免费、无需 Key、文本不出设备</strong>。
+              首次翻译某个语言时会自动下载一个小语言包（几 MB）。此项始终优先于下面的远端引擎，
+              不可用时自动降级，不会影响翻译结果。
+            </p>
+            <div class="checklist-grid">
+              <label class="check"><input type="checkbox" id="enableOnDevice" /> 启用内置翻译（推荐）</label>
+            </div>
+            <div class="test-row">
+              <button class="btn" id="probeOnDevice">检测内置翻译</button>
+              <button class="btn" id="downloadOnDevice">下载语言包</button>
+              <span id="onDeviceStatus" class="test-result"></span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>连通性测试</label>
+            <div class="test-row">
+              <select id="testProvider"></select>
+              <button class="btn" id="runTest">测试</button>
+              <span id="testResult" class="test-result"></span>
+            </div>
+          </div>
+        </section>
+
+        <section id="display" class="card">
+          <h2>显示方式</h2>
+          <div class="grid2">
+            <div class="field">
+              <label for="displayMode">译文展示</label>
+              <select id="displayMode">
+                <option value="bilingual">双语对照（原文 + 译文）</option>
+                <option value="replace">仅译文（隐藏原文）</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="targetLang">默认目标语言</label>
+              <select id="targetLang"></select>
+            </div>
+            <div class="field">
+              <label for="sourceLang">原文语言</label>
+              <select id="sourceLang">
+                <option value="auto">自动检测</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="bilingualColor">译文颜色</label>
+              <input type="color" id="bilingualColor" />
+            </div>
+            <div class="field">
+              <label for="bilingualFontScale">译文字号比例 <span class="value" id="fontScaleValue"></span></label>
+              <input type="range" id="bilingualFontScale" min="0.8" max="1.2" step="0.01" />
+            </div>
+          </div>
+          <div class="checklist-grid">
+            <label class="check"><input type="checkbox" id="markdownRendering" /> 渲染译文中的轻量 Markdown</label>
+            <label class="check"><input type="checkbox" id="originalTooltip" /> 鼠标悬停显示原文</label>
+            <label class="check"><input type="checkbox" id="showFloatingButton" /> 显示页面悬浮球</label>
+          </div>
+        </section>
+
+        <section id="scope" class="card">
+          <h2>翻译范围</h2>
+          <p class="hint">决定"页面上哪些文字会被翻译"。跳过规则越精确，越不容易翻译到代码、导航和广告。</p>
+          <div class="checklist-grid">
+            <label class="check"><input type="checkbox" id="translatePlaceholder" /> 输入框占位文字</label>
+            <label class="check"><input type="checkbox" id="translateAriaLabel" /> 无障碍标签（aria-label）</label>
+            <label class="check"><input type="checkbox" id="translateImageAlt" /> 图片 alt 文字</label>
+            <label class="check"><input type="checkbox" id="translateTitle" /> title 提示文字</label>
+            <label class="check"><input type="checkbox" id="skipNoise" /> 跳过导航/页脚/侧栏（保守模式）</label>
+            <label class="check"><input type="checkbox" id="translateShadowDom" /> 穿透 Shadow DOM（Web Components）</label>
+            <label class="check"><input type="checkbox" id="translateIframes" /> 翻译同源内嵌页面</label>
+          </div>
+          <div class="grid2">
+            <div class="field">
+              <label for="minTextLength">最短翻译长度（字符）</label>
+              <input type="number" id="minTextLength" min="1" max="50" />
+            </div>
+            <div class="field">
+              <label for="maxNodeLength">单个文本节点上限（字符）</label>
+              <input type="number" id="maxNodeLength" min="200" max="20000" step="100" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="skipSelectors">额外跳过选择器（每行一个 CSS 选择器）</label>
+            <textarea id="skipSelectors" rows="3" placeholder=".ad-banner&#10;#sidebar-promo"></textarea>
+          </div>
+          <div class="field">
+            <label for="onlySelectors">只翻译这些区域（留空 = 全页）</label>
+            <textarea id="onlySelectors" rows="2" placeholder="article, main, .post-content"></textarea>
+          </div>
+        </section>
+
+        <section id="site" class="card">
+          <h2>站点适配</h2>
+          <div class="field">
+            <label>当前站点</label>
+            <div class="test-row">
+              <input type="text" id="siteHost" placeholder="example.com" />
+              <button class="btn" id="loadSite">读取当前标签页</button>
+            </div>
+            <div class="test-row">
+              <label class="check"><input type="radio" name="siteMode" value="auto" /> 跟随全局</label>
+              <label class="check"><input type="radio" name="siteMode" value="always" /> 打开即自动翻译</label>
+              <label class="check"><input type="radio" name="siteMode" value="never" /> 永不翻译</label>
+            </div>
+            <div class="test-row">
+              <label class="check">该站点使用其它目标语言</label>
+              <select id="siteTargetLang"></select>
+            </div>
+          </div>
+          <div class="field">
+            <label>已配置的站点</label>
+            <div id="siteRules" class="rules"></div>
+          </div>
+        </section>
+
+        <section id="behavior" class="card">
+          <h2>行为与性能</h2>
+          <div class="checklist-grid">
+            <label class="check"><input type="checkbox" id="enabled" /> 启用扩展</label>
+            <label class="check"><input type="checkbox" id="autoTranslateOnLoad" /> 打开网页后自动翻译</label>
+            <label class="check"><input type="checkbox" id="followDynamicContent" /> 跟进动态加载的内容（无限滚动 / SPA）</label>
+            <label class="check"><input type="checkbox" id="translateOnSelection" /> 划词自动翻译</label>
+            <label class="check"><input type="checkbox" id="enableCache" /> 启用翻译缓存（省额度、更快）</label>
+            <label class="check"><input type="checkbox" id="debug" /> 输出调试日志到控制台</label>
+          </div>
+          <div class="grid3">
+            <div class="field">
+              <label for="concurrency">并发请求数</label>
+              <input type="number" id="concurrency" min="1" max="10" />
+            </div>
+            <div class="field">
+              <label for="batchMaxChars">每段上下文字符预算</label>
+              <input type="number" id="batchMaxChars" min="200" max="6000" step="100" />
+            </div>
+            <div class="field">
+              <label for="mutationDebounceMs">动态内容防抖（毫秒）</label>
+              <input type="number" id="mutationDebounceMs" min="100" max="3000" step="50" />
+            </div>
+          </div>
+        </section>
+
+        <section id="storage" class="card">
+          <h2>缓存与备份</h2>
+          <div class="field">
+            <label>缓存状态</label>
+            <div class="test-row">
+              <button class="btn" id="refreshStats">刷新统计</button>
+              <button class="btn danger" id="clearCache">清空翻译缓存</button>
+              <span id="cacheStats" class="test-result"></span>
+            </div>
+          </div>
+          <div class="field">
+            <label>设置备份</label>
+            <div class="test-row">
+              <button class="btn" id="exportSettings">导出 JSON</button>
+              <button class="btn" id="importSettings">导入 JSON</button>
+              <button class="btn danger" id="resetSettings">恢复默认</button>
+              <input type="file" id="importFile" accept="application/json" hidden />
+            </div>
+          </div>
+        </section>
+
+        <section id="about" class="card">
+          <h2>关于</h2>
+          <ul class="about-list">
+            <li><strong>快捷键</strong>：<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd> 翻译/还原页面；<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd> 切换显示模式。</li>
+            <li><strong>隐私</strong>：默认使用 Chrome 内置翻译，文本<strong>不离开本机</strong>；只有降级到远端引擎时，被翻译的文本才会发送给该引擎。API Key 保存在浏览器本地存储中。</li>
+            <li><strong>内置翻译说明</strong>：需要 Chrome 138+ 桌面版。首次翻译某个语言时会下载一个小语言包（几 MB），之后可离线使用。它由页面上下文执行（需要用户手势），失败会自动降级，不影响翻译结果。</li>
+            <li><strong>免费通道说明</strong>：Microsoft/Edge 与 Google 通道使用其公开 Web 服务，无需 Key，但存在配额限制，请勿用于高频批量场景。</li>
+          </ul>
+        </section>
+
+        <div class="save-bar">
+          <span id="saveHint">修改会自动保存</span>
+          <span id="saveStatus"></span>
+        </div>
+      </main>
+    </div>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

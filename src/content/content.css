@@ -1,0 +1,94 @@
+/**
+ * 页面内译文样式表。
+ *
+ * 兼容性要点（这些细节决定了"看起来不破坏页面"）：
+ *  - 双语对照容器用 `display: contents`：它自己不生成盒子，因此不会打断
+ *    父元素的 flex / grid / table 布局，译文就像原文的同级兄弟节点一样参与排版；
+ *  - 中文译文比英文原文短，但从小语种翻中文会变长，因此允许换行且不做宽度限制；
+ *  - `all: unset` 起手，避免站点通配符样式（如 `p span { display: block }`）污染；
+ *  - 仅译文模式不删除原文节点，只是把它隐藏，保证还原时 100% 回到原样。
+ */
+
+:root {
+  --dsh-translation-color: #4b7bec;
+  --dsh-font-scale: 0.95;
+}
+
+/* 双语对照：译文另起一行，视觉上与原文区分但保持同段落语义 */
+[data-dsh-translator='inline'].dsh-translation {
+  display: contents;
+}
+
+[data-dsh-translator='inline'].dsh-translation > .dsh-translation__body {
+  display: block;
+  margin: 0.18em 0 0.12em;
+  padding-left: 0.5em;
+  border-left: 2px solid var(--dsh-translation-color);
+  color: var(--dsh-translation-color);
+  font-size: calc(1em * var(--dsh-font-scale));
+  line-height: 1.62;
+  white-space: normal;
+  word-break: break-word;
+  text-align: inherit;
+}
+
+/* 行内短文本（按钮、标签、表头）不换行，避免撑坏按钮 */
+:is(button, a, label, th, td, h1, h2, h3, h4, .button, [role='button'])
+  > [data-dsh-translator='inline'].dsh-translation
+  > .dsh-translation__body {
+  display: inline;
+  margin: 0 0 0 0.35em;
+  padding: 0 0 0 0.35em;
+  border-left: 1px solid color-mix(in srgb, var(--dsh-translation-color) 45%, transparent);
+  font-size: 0.95em;
+}
+
+/* 只翻译了片段时给出弱提示 */
+[data-dsh-translator='inline'][data-dsh-partial='1'] > .dsh-translation__body {
+  border-left-style: dashed;
+  opacity: 0.92;
+}
+
+/* 译文里的行内代码/链接保持可读 */
+.dsh-translation__body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.92em;
+  padding: 0 0.25em;
+  border-radius: 3px;
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+.dsh-translation__body a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.dsh-translation__body strong { font-weight: 700; }
+.dsh-translation__body em { font-style: italic; }
+
+/* 仅译文模式：隐藏原文，译文变成正文 */
+.dsh-mode-replace [data-dsh-orig='1'] {
+  display: none !important;
+}
+.dsh-mode-replace [data-dsh-translator='inline'] > .dsh-translation__body {
+  color: inherit;
+  border-left: none;
+  padding-left: 0;
+  font-size: inherit;
+  margin: 0;
+}
+
+/* 翻译进行中：给整体一点状态感（不动布局） */
+.dsh-translating [data-dsh-translator='inline'] > .dsh-translation__body {
+  opacity: 0.75;
+}
+
+/* 属性译文目前无法单独加样式，这里给 placeholder 一个视觉提示 */
+input[data-dsh-attr-placeholder='translated']::placeholder,
+textarea[data-dsh-attr-placeholder='translated']::placeholder {
+  color: color-mix(in srgb, var(--dsh-translation-color) 78%, currentColor);
+}
+
+/* 打印时不要带译文 */
+@media print {
+  [data-dsh-translator='inline'] { display: none !important; }
+}

@@ -1,0 +1,24 @@
+# 依赖与构建产物
+node_modules/
+dist/
+release/
+*.zip
+
+# 编辑器 / IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+
+# 系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 本地缓存与临时文件
+.npm-cache/
+.cache/
+tmp/
+*.log
+*.tmp
+*.bak
